@@ -34,24 +34,25 @@ class RleTest extends AsyncFlatSpec with Matchers with LazyLogging {
       .map(_.mkString)
 
   "rleEncode" should "be fine" in {
-    "".rleEncode shouldBe ""
-    "aabcc".rleEncode shouldBe "a2bc2"
-    "abc".rleEncode shouldBe "abc"
-    "abbc".rleEncode shouldBe "ab2c"
-    "abba".rleEncode shouldBe "ab2a"
+    "".rle shouldBe ""
+    "aabcc".rle shouldBe "a2bc2"
+    "abc".rle shouldBe "abc"
+    "abbc".rle shouldBe "ab2c"
+    "abba".rle shouldBe "ab2a"
   }
 
   "rleParEncode" should "be fine" in {
     for {
-      _ <- "".rleParEncode().map(_ shouldBe "")
-      _ <- "aabcc".rleParEncode().map(_ shouldBe "a2bc2")
-      _ <- "abc".rleParEncode().map(_ shouldBe "abc")
-      _ <- "abbc".rleParEncode().map(_ shouldBe "ab2c")
-      _ <- "abba".rleParEncode().map(_ shouldBe "ab2a")
+      _ <- "".rlePar().map(_ shouldBe "")
+      _ <- "aabcc".rlePar().map(_ shouldBe "a2bc2")
+      _ <- "abc".rlePar().map(_ shouldBe "abc")
+      _ <- "abbc".rlePar().map(_ shouldBe "ab2c")
+      _ <- "abba".rlePar().map(_ shouldBe "ab2a")
     } yield Succeeded
   }
 
-  "rleEncodePerformance" should "be fine with basic method and be fast with parallel execution" in {
+  ignore should "be fine with basic method and be fast with parallel execution" in {
+    //  "rleEncodePerformance" should "be fine with basic method and be fast with parallel execution" in {
     for {
       _ <- Future.unit
       data <- initData(100 * 1000)
@@ -59,14 +60,14 @@ class RleTest extends AsyncFlatSpec with Matchers with LazyLogging {
       _ <- Future(Thread.sleep(2000))
 
       parStart = System.currentTimeMillis()
-      parStr <- data.rleParEncode(parallelism = 10)
+      parStr <- data.rlePar()
       parRes = System.currentTimeMillis() - parStart
       _ = logger.info(s"Parallel execution time: ${parRes} ms")
       //      _ <- parStr.map(s => logger.debug(s))
 
 
       start = System.currentTimeMillis()
-      str <- Future(data.rleEncode)
+      str <- Future(data.rle)
       res = System.currentTimeMillis() - start
       _ = logger.info(s"Sequential execution time: ${res} ms")
       //      _ = logger.debug(str)
@@ -80,8 +81,8 @@ class RleTest extends AsyncFlatSpec with Matchers with LazyLogging {
     for {
       _ <- Future.unit
       _ = logger.info("Start preheating")
-      _ <- Future(data.rleEncode)
-      _ <- data.rleParEncode()
+      _ <- Future(data.rle)
+      _ <- data.rlePar()
       _ = logger.info("End preheating")
     } yield ()
 }

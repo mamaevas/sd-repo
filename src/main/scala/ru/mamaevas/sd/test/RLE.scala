@@ -5,16 +5,23 @@ import akka.stream.Materializer
 import akka.stream.scaladsl.Source
 
 import scala.concurrent.{ExecutionContext, Future}
-import scala.language.implicitConversions
 
-/** Run-length encoding */
+/**
+ * Run-length encoding
+ * На вход ф-ции дается строка произвольной длины, состящая строго из букв английскго алфавита.
+ * На выходе необходимо получить "сжатую" строку, в которой одинаковые подряд идущие символы
+ * заменены на пару <символ>+<количество повторений>, если повторений больше чем 1, в остальных
+ * случаях символ остается в строке без изменений
+ */
 object RLE {
 
-  implicit class RleStringExt(s: String) {
-    def rleEncode: String =
-      s.toSeq.rleEncode
+  def rle(s: String): String = s.rle
 
-    def rleParEncode(grouped: Int = 1000, parallelism: Int = 10)(implicit ec: ExecutionContext, mat: Materializer): Future[String] =
+  implicit class RleStringExt(s: String) {
+    def rle: String =
+      s.toSeq.rle
+
+    def rlePar(grouped: Int = 1000, parallelism: Int = 10)(implicit ec: ExecutionContext, mat: Materializer): Future[String] =
       Source(s)
         .toRlePairsAsync(grouped, parallelism)
         .map(_.map(RLE.toString).mkString)
@@ -34,7 +41,7 @@ object RLE {
       res._2.fold(res._1)(res._1 :+ _)
     }
 
-    def rleEncode: String =
+    def rle: String =
       toRlePairs
         .map(RLE.toString)
         .mkString

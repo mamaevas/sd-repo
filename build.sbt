@@ -4,10 +4,6 @@ version := "0.1"
 
 scalaVersion := "2.13.8"
 
-scalacOptions ++= List(
-  "-language:implicitConversions"
-)
-
 libraryDependencies ++= List(
   "org.scalatest" %% "scalatest" % "3.2.11" % "test",
   "ch.qos.logback" % "logback-classic" % "1.2.10",
