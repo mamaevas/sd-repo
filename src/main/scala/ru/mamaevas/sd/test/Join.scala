@@ -7,4 +7,19 @@ package ru.mamaevas.sd.test
  */
 object Join {
 
+  def join(segments: Set[(Int, Int)]): Set[(Int, Int)] =
+    join(segments.toList).toSet
+
+  def join(segments: List[(Int, Int)]): List[(Int, Int)] =
+    segments
+      .sorted
+      .foldLeft(List.empty[(Int, Int)]) { (acc, next) =>
+        acc match {
+          case Nil => List(next)
+          case head :: tail if head._1 <= next._1 && next._2 <= head._2 => head :: tail
+          case head :: tail if next._1 <= head._2 => (head._1, next._2) :: tail
+          case _ => next :: acc
+        }
+      }
+      .reverse
 }

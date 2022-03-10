@@ -39,6 +39,12 @@ class RleTest extends AsyncFlatSpec with Matchers with LazyLogging {
     "abc".rle shouldBe "abc"
     "abbc".rle shouldBe "ab2c"
     "abba".rle shouldBe "ab2a"
+
+    rle("") shouldBe ""
+    rle("aabcc") shouldBe "a2bc2"
+    rle("abc") shouldBe "abc"
+    rle("abbc") shouldBe "ab2c"
+    rle("abba") shouldBe "ab2a"
   }
 
   "rleParEncode" should "be fine" in {
