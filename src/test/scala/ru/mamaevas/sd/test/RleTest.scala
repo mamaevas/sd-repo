@@ -33,13 +33,15 @@ class RleTest extends AsyncFlatSpec with Matchers with LazyLogging {
       .runFold(List.empty[Char])(_ ++ _)
       .map(_.mkString)
 
-  "rleEncode" should "be fine" in {
+  "rle" should "be fine with ext" in {
     "".rle shouldBe ""
     "aabcc".rle shouldBe "a2bc2"
     "abc".rle shouldBe "abc"
     "abbc".rle shouldBe "ab2c"
     "abba".rle shouldBe "ab2a"
+  }
 
+  it should "be fine with method" in {
     rle("") shouldBe ""
     rle("aabcc") shouldBe "a2bc2"
     rle("abc") shouldBe "abc"
@@ -47,7 +49,7 @@ class RleTest extends AsyncFlatSpec with Matchers with LazyLogging {
     rle("abba") shouldBe "ab2a"
   }
 
-  "rleParEncode" should "be fine" in {
+  it should "be fine in parallel execution" in {
     for {
       _ <- "".rlePar().map(_ shouldBe "")
       _ <- "aabcc".rlePar().map(_ shouldBe "a2bc2")

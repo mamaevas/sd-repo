@@ -7,8 +7,7 @@ package ru.mamaevas.sd.test
  */
 object Join {
 
-  def join(segments: Set[(Int, Int)]): Set[(Int, Int)] =
-    join(segments.toList).toSet
+  def join(segments: Set[(Int, Int)]): Set[(Int, Int)] = join(segments.toList).toSet
 
   def join(segments: List[(Int, Int)]): List[(Int, Int)] =
     segments
